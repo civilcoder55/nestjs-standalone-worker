@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BullModule } from '@nestjs/bullmq';
+import { QueueModule } from 'src/queue/queue.module';
 
 @Module({
   imports: [
@@ -16,11 +14,10 @@ import { BullModule } from '@nestjs/bullmq';
       logging: true,
       extra: { max: 2 },
     }),
-    BullModule.registerQueue({
-      name: 'test',
+    QueueModule.register({
+      consumers: ['dist/**/*.processor.js'],
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
-export class AppModule {}
+export class WorkerModule {}
